@@ -6188,7 +6188,9 @@ export function initWorldInfo() {
     });
 
     // Simple Mode toggle: client-side UI preference (persisted via accountStorage), not a per-book setting.
-    applyWorldInfoSimpleMode(accountStorage.getItem(SIMPLE_MODE_KEY) === 'true');
+    // Defaults to ON for users who have never toggled it; an explicit choice ('true'/'false') is respected.
+    const storedSimpleMode = accountStorage.getItem(SIMPLE_MODE_KEY);
+    applyWorldInfoSimpleMode(storedSimpleMode === null ? true : storedSimpleMode === 'true');
     $('#world_info_simple_mode').on('click', function () {
         const enabled = !document.body.classList.contains('wiSimpleMode');
         accountStorage.setItem(SIMPLE_MODE_KEY, String(enabled));

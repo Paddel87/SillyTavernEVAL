@@ -4832,6 +4832,7 @@
                             <div id="world_popup_new" class="menu_button fa-solid fa-plus" title="New Entry" data-i18n="[title]New Entry"></div>
                             <div id="OpenAllWIEntries" class="menu_button fa-solid fa-expand" title="Open all Entries" data-i18n="[title]Open all Entries"></div>
                             <div id="CloseAllWIEntries" class="menu_button fa-solid fa-compress" title="Close all Entries" data-i18n="[title]Close all Entries"></div>
+                            <div id="world_info_simple_mode" class="menu_button fa-solid fa-wand-magic-sparkles" title="Toggle Simple Mode: hide advanced entry fields and show only Title, Status, Keywords and Content." data-i18n="[title]Toggle Simple Mode: hide advanced entry fields and show only Title, Status, Keywords and Content."></div>
                             <div id="world_backfill_memos" class="menu_button fa-solid fa-notes-medical" title="Fill empty Memo/Titles with Keywords" data-i18n="[title]Fill empty Memo/Titles with Keywords"></div>
                             <div id="world_apply_current_sorting" class="menu_button fa-solid fa-solid fa-arrow-down-9-1" title="Apply current sorting as Order" data-i18n="[title]Apply current sorting as Order"></div>
                             <input type="search" class="text_pole textarea_compact" data-i18n="[placeholder]Search..." id="world_info_search" placeholder="Search...">
@@ -6816,7 +6817,7 @@
                                 ⌨️
                             </button>
                         </div>
-                        <div class="world_entry_form_control">
+                        <div class="world_entry_form_control wiAdvanced">
                             <small class="textAlignCenter" data-i18n="Logic">Logic</small>
                             <select name="entryLogicType" class="text_pole widthFitContent margin0">
                                 <option value="0" data-i18n="AND ANY">AND ANY</option>
@@ -6825,7 +6826,7 @@
                                 <option value="2" data-i18n="NOT ANY">NOT ANY</option>
                             </select>
                         </div>
-                        <div class="world_entry_form_control keysecondary flex1">
+                        <div class="world_entry_form_control keysecondary flex1 wiAdvanced">
                             <small class="displayNone">
                                 <span data-i18n="(ignored if empty)">
                                     (ignored if empty)
@@ -6839,7 +6840,7 @@
                             </button>
                         </div>
                     </div>
-                    <div name="perEntryOverridesBlock" class="flex-container wide100p alignitemscenter">
+                    <div name="perEntryOverridesBlock" class="flex-container wide100p alignitemscenter wiAdvanced">
                         <div class="world_entry_form_control flex1" title="Set the outlet name for this WI entry.&#10;&#10;WI entries with position 'outlet' will not be added to the prompt automatically. Instead, they will be collected and can be used as a macro in the prompt.&#10;Add {{outlet::YourName}} to the prompt in any place you want to add all WI entries this specific outlet." data-i18n="[title]wi_outlet_name">
                             <small class="textAlignCenter">
                                 <span data-i18n="Outlet Name">Outlet Name</span>
@@ -6902,7 +6903,7 @@
                                             (<span data-i18n="extension_token_counter">Tokens:</span>&nbsp; <span class="world_entry_form_token_counter" data-first-run="true">counting...</span>)&nbsp;
                                             <span class="world_entry_form_uid_value" data-first-run="true"></span>
                                         </span>
-                                        <div class="flex-container">
+                                        <div class="flex-container wiAdvanced">
                                             <div class="flex-container flexFlowColumn">
                                                 <label class="checkbox flex-container alignitemscenter flexNoGap" data-i18n="[title]This entry will not be recursively activated by other entries." title="This entry will not be recursively activated by other entries.">
                                                     <input type="checkbox" name="excludeRecursion" />
@@ -6946,7 +6947,7 @@
                     <div class="world_entry_thin_controls commentContainer">
                     </div>
                 </div>
-                <div class="flex-container wide100p flexGap10">
+                <div class="flex-container wide100p flexGap10 wiAdvanced">
                     <div class="flex4 flex-container flexFlowColumn flexNoGap">
                         <div class="flex-container justifySpaceBetween">
                             <small for="group">
@@ -7019,7 +7020,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex-container wide100p flexGap10">
+                <div class="flex-container wide100p flexGap10 wiAdvanced">
                     <div class="flex4 flex-container flexFlowColumn flexNoGap">
                         <div class="flex-container justifySpaceBetween">
                             <small for="characterFilter" data-i18n="Filter to Characters or Tags">
@@ -7068,7 +7069,7 @@
                         </div>
                     </div>
                 </div>
-                <div name="WIEntryBottomControls" class="flex-container flex1 justifySpaceBetween world_entry_form_horizontal">
+                <div name="WIEntryBottomControls" class="flex-container flex1 justifySpaceBetween world_entry_form_horizontal wiAdvanced">
                     <div class="flex-container flexFlowColumn flexNoGap  wi-enter-footer-text">
                         <label class="checkbox flex-container">
                             <input type="checkbox" name="selective" />
@@ -7084,7 +7085,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="inline-drawer wide100p flexFlowColumn">
+                <div class="inline-drawer wide100p flexFlowColumn wiAdvanced">
                     <div class="inline-drawer-toggle inline-drawer-header inline-drawer-header-pointer userSettingsInnerExpandable">
                         <strong data-i18n="Additional Matching Sources">Additional Matching Sources</strong>
                         <div class="fa-solid fa-circle-chevron-down inline-drawer-icon down"></div>
@@ -7148,12 +7149,12 @@
                                         </div>
                                         <!-- <span class="world_entry_form_position_value"></span> -->
                                         <select data-i18n="[title]WI Entry Status:🔵 Constant🟢 Normal🔗 Vectorized" title="WI Entry Status:&#13;🔵 Constant&#13;🟢 Normal&#13;🔗 Vectorized" name="entryStateSelector" class="text_pole widthNatural margin0">
-                                            <option value="constant" title="Constant" data-i18n="[title]WI_Entry_Status_Constant">🔵</option>
-                                            <option value="normal" title="Normal" data-i18n="[title]WI_Entry_Status_Normal">🟢</option>
-                                            <option value="vectorized" title="Vectorized" data-i18n="[title]WI_Entry_Status_Vectorized">🔗</option>
+                                            <option value="constant" title="Constant: always inserted" data-i18n="[title]WI_Entry_Status_Constant">🔵 Always on</option>
+                                            <option value="normal" title="Normal: inserted when a keyword matches" data-i18n="[title]WI_Entry_Status_Normal">🟢 On mention</option>
+                                            <option value="vectorized" title="Vectorized: retrieved by semantic similarity" data-i18n="[title]WI_Entry_Status_Vectorized">🔗 Semantic</option>
                                         </select>
                                     </div>
-                                    <div class="WIEnteryHeaderControls flex-container">
+                                    <div class="WIEnteryHeaderControls flex-container wiAdvanced">
                                         <div name="PositionBlock" class="world_entry_form_control world_entry_form_radios wi-enter-footer-text">
                                             <label for="position" class="WIEntryHeaderTitleMobile" data-i18n="Position:">Position:</label>
                                             <select name="position" class="text_pole widthNatural margin0" data-i18n="[title]T_Position" title="↑Char: Before Character Definitions&#13;↓Char: After Character Definitions&#13;↑EM: Before Example Messages&#13;↓EM: After Example Messages&#13;↑AN: Before Author's Note&#13;↓AN: After Author's Note&#13;@D ⚙️: at Depth (System)&#13;@D 👤: at Depth (User)&#13;@D 🤖: at Depth (Assistant)">

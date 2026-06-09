@@ -1,0 +1,157 @@
+/* Character Creation Wizard overlay */
+
+#characterWizardOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+#characterWizardOverlay.open {
+    display: flex;
+}
+
+#characterWizardOverlay .cw-card {
+    width: min(680px, 94vw);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--SmartThemeBlurTintColor, #1e1e22);
+    color: var(--SmartThemeBodyColor, #e0e0e0);
+    border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.12));
+    border-radius: 14px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+#characterWizardOverlay .cw-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 16px 18px 10px;
+}
+
+#characterWizardOverlay .cw-title {
+    margin: 0;
+    font-size: 1.15em;
+}
+
+#characterWizardOverlay .cw-stepinfo {
+    opacity: 0.7;
+}
+
+#characterWizardOverlay .cw-progress {
+    display: flex;
+    gap: 6px;
+    padding: 0 18px 12px;
+}
+
+#characterWizardOverlay .cw-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.15));
+    cursor: default;
+    transition: background 0.2s ease;
+}
+
+#characterWizardOverlay .cw-dot.active {
+    background: var(--SmartThemeQuoteColor, #7d9cff);
+}
+
+#characterWizardOverlay .cw-body {
+    padding: 4px 18px 8px;
+    overflow-y: auto;
+}
+
+#characterWizardOverlay .cw-field {
+    margin-bottom: 16px;
+}
+
+#characterWizardOverlay .cw-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+#characterWizardOverlay .cw-hint {
+    font-size: 0.85em;
+    opacity: 0.65;
+    margin-bottom: 8px;
+}
+
+#characterWizardOverlay textarea.text_pole,
+#characterWizardOverlay input.text_pole {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#characterWizardOverlay .cw-error {
+    border-color: #e05a5a !important;
+    box-shadow: 0 0 0 1px #e05a5a;
+}
+
+#characterWizardOverlay .cw-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+#characterWizardOverlay .cw-chip {
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.18));
+    cursor: pointer;
+    user-select: none;
+    font-size: 0.9em;
+    transition: all 0.15s ease;
+}
+
+#characterWizardOverlay .cw-chip:hover {
+    border-color: var(--SmartThemeQuoteColor, #7d9cff);
+}
+
+#characterWizardOverlay .cw-chip.selected {
+    background: var(--SmartThemeQuoteColor, #7d9cff);
+    border-color: var(--SmartThemeQuoteColor, #7d9cff);
+    color: #fff;
+}
+
+#characterWizardOverlay .cw-review-row {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.08));
+}
+
+#characterWizardOverlay .cw-review-label {
+    font-weight: 600;
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-bottom: 2px;
+}
+
+#characterWizardOverlay .cw-review-value {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+#characterWizardOverlay .cw-footer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px 16px;
+    border-top: 1px solid var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.08));
+}
+
+#characterWizardOverlay .cw-spacer {
+    flex: 1;
+}
+
+#characterWizardOverlay .cw-next {
+    background: var(--SmartThemeQuoteColor, #7d9cff);
+    color: #fff;
+    border: none;
+}

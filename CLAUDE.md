@@ -19,8 +19,10 @@ Leitgedanke (geprägt vom Umstieg von TypingMind):
 
 ## Arbeitsweise & Konventionen (WICHTIG)
 
-- **Branch/PR:** Entwicklung auf `claude/story-consistency-tokens-xiUD9`; committen & pushen.
-  Dieser Branch wird von **PR #1** (Paddel87/SillyTavernEVAL) getrackt — keinen neuen PR anlegen.
+- **Branch/PR:** PR #1 (`claude/story-consistency-tokens-xiUD9`) wurde beim Stand
+  `fd43d24f8` (Charakter-Wizard) nach `release` gemerged. Die danach gepushten Commits
+  (TypingMind-Konverter/-Importer, diese CLAUDE.md) liegen **nur auf dem Branch** und
+  fehlen noch in `release`. Neue Arbeit: eigenen Branch von `release` abzweigen + PR.
 - **Update-Stabilität:** Änderungen möglichst **additiv & datenkompatibel** halten. Kein
   invasiver Umbau am Daten-/Backend-Modell, wo eine Frontend-Schicht reicht. Eigene
   Felder/Elemente klar markieren (Konvention: Klasse `wiAdvanced`, IDs mit sprechendem Präfix).
@@ -51,6 +53,27 @@ Leitgedanke (geprägt vom Umstieg von TypingMind):
   ablegen (sonst findet es `puppeteer` nicht). Beim ersten Start blockiert ein
   „Welcome"-Popup (Persona) — im Test den sichtbaren „Save"-Button klicken bzw. Overlay entfernen.
 - Nach Tests: Server stoppen, Test-Daten in `data/` aufräumen, ad-hoc Skripte löschen.
+
+## Upstream-Updates nachführen
+
+Remotes: `origin` = Paddel87/SillyTavernEVAL (Fork), `upstream` = SillyTavern/SillyTavern.
+
+```bash
+git fetch upstream
+git merge upstream/release      # auf release; alternativ: git rebase upstream/release
+git push origin release         # bei Rebase: --force-with-lease
+```
+
+- **Branch-Modell upstream:** Entwicklung auf `staging`, periodische Merges nach
+  `release`. Für stabile Updates immer `upstream/release` verwenden.
+- **Konflikt-Hotspots:** `public/scripts/world-info.js` (Simple Mode steckt in einer
+  großen, upstream aktiv weiterentwickelten Datei); `public/index.html` und
+  `public/script.js` (Einhängepunkte der Fork-Module). Eigene Modul-Dateien
+  (`character-wizard.js` etc.) sind neu und konfliktfrei.
+- **Nach jedem Update:** `npm install` (Dependencies ändern sich häufig), dann App
+  starten und Wizard + World-Info-Simple-Mode kurz gegentesten.
+- `Update-Instructions.txt` im Repo beschreibt das Update einer Endnutzer-Installation,
+  **nicht** das Fork-Nachführen.
 
 ## Bisherige Änderungen (Changelog)
 

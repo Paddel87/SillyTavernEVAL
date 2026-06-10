@@ -72,10 +72,58 @@
     margin-bottom: 16px;
 }
 
+#characterWizardOverlay .cw-fieldhead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2px;
+}
+
 #characterWizardOverlay .cw-label {
     display: block;
     font-weight: 600;
     margin-bottom: 2px;
+}
+
+#characterWizardOverlay .cw-ai {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    font-size: 0.82em;
+    border-radius: 999px;
+    border: 1px solid var(--SmartThemeQuoteColor, #7d9cff);
+    color: var(--SmartThemeQuoteColor, #7d9cff);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+#characterWizardOverlay .cw-ai:hover {
+    background: var(--SmartThemeQuoteColor, #7d9cff);
+    color: #fff;
+}
+
+#characterWizardOverlay .cw-ai.cw-ai-off {
+    opacity: 0.5;
+    border-color: var(--SmartThemeBorderColor, rgba(255, 255, 255, 0.25));
+    color: var(--SmartThemeBodyColor, #ccc);
+}
+
+#characterWizardOverlay .cw-ai.cw-loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+#characterWizardOverlay .cw-ai.cw-loading i {
+    animation: cw-spin 0.8s linear infinite;
+}
+
+#characterWizardOverlay .cw-ai.cw-loading .fa-wand-magic-sparkles::before {
+    content: "\f110"; /* fa-spinner */
+}
+
+@keyframes cw-spin {
+    to { transform: rotate(360deg); }
 }
 
 #characterWizardOverlay .cw-hint {

@@ -8,7 +8,14 @@
  *
  * Pure front-end: it drives the same fields and create button a user would,
  * so no character data model or backend behavior is changed.
+ *
+ * Optionally, each free-text field offers a ✨ "AI assist" button that uses the
+ * already-connected LLM (via generateRaw) to draft content from what the user
+ * has entered so far. No new API or key is involved; if nothing is connected,
+ * the button explains that instead.
  */
+
+import { generateRaw, online_status } from '../script.js';
 
 const PERSONALITY_TRAITS = [
     'Warm', 'Stoic', 'Playful', 'Cunning', 'Shy', 'Confident',
@@ -47,6 +54,90 @@ function composePersonality() {
     const traits = [...state.traits].join(', ');
     const notes = state.personalityNotes.trim();
     return [traits, notes].filter(Boolean).join('\n');
+}
+
+/* ---------- AI assist ---------- */
+
+const AI_SYSTEM_PROMPT = 'You are helping author a roleplay character card. Reply with only the requested text — no preamble, no quotes around the whole answer, no markdown headers.';
+
+/** Prompt builders for each assisted field, using whatever the user has entered so far. */
+const AI_PROMPTS = {
+    description: () => {
+        const ctx = [state.name && `Name: ${state.name}`, state.vibe && `Concept: ${state.vibe}`].filter(Boolean).join('. ');
+        return `Write a vivid character description (appearance, role, background) for a roleplay character. ${ctx}. Use third person, 2–4 sentences, plain prose.`;
+    },
+    personalityNotes: () => {
+        const ctx = [state.name && `Name: ${state.name}`, state.vibe && `Concept: ${state.vibe}`,
+            state.traits.size && `Traits: ${[...state.traits].join(', ')}`, state.description && `Description: ${state.description}`].filter(Boolean).join('. ');
+        return `Describe this character's personality and demeanour in 1–2 sentences. ${ctx}.`;
+    },
+    scenario: () => {
+        const ctx = [state.name && `Character: ${state.name}`, state.description && `About them: ${state.description}`].filter(Boolean).join('. ');
+        return `Write a short roleplay scenario/setting (2–3 sentences) establishing where the conversation begins. ${ctx}. Refer to the user as {{user}}.`;
+    },
+    firstMessage: () => {
+        const ctx = [state.name && `Character: ${state.name}`, state.description && `About them: ${state.description}`,
+            composePersonality() && `Personality: ${composePersonality()}`, state.scenario && `Scenario: ${state.scenario}`].filter(Boolean).join('. ');
+        return `Write an in-character opening message this character says to greet {{user}}. ${ctx}. Include a little action in *asterisks*. 2–4 sentences, written as {{char}}.`;
+    },
+};
+
+function aiAvailable() {
+    return online_status !== 'no_connection';
+}
+
+async function runAI(button, textarea, stateKey) {
+    if (!aiAvailable()) {
+        if (typeof toastr !== 'undefined') toastr.info('Connect an API (top-left plug icon) to use AI assist.', 'No API connected');
+        return;
+    }
+    if (button.classList.contains('cw-loading')) return;
+    button.classList.add('cw-loading');
+    try {
+        const prompt = AI_PROMPTS[stateKey]();
+        const result = await generateRaw({ prompt, systemPrompt: AI_SYSTEM_PROMPT, responseLength: 300 });
+        const text = String(result || '').trim();
+        if (text) {
+            textarea.value = text;
+            state[stateKey] = text;
+        }
+    } catch (err) {
+        console.error('[CharacterWizard] AI assist failed', err);
+        if (typeof toastr !== 'undefined') toastr.error(String(err?.message || err), 'AI assist failed');
+    } finally {
+        button.classList.remove('cw-loading');
+    }
+}
+
+/**
+ * Builds a labelled textarea field with a ✨ AI-assist button in the label row.
+ * @param {string} label
+ * @param {string} hint
+ * @param {string} stateKey Key in `state` to read/write.
+ * @param {string} placeholder
+ * @param {number} rows
+ */
+function aiField(label, hint, stateKey, placeholder, rows) {
+    const wrap = document.createElement('div');
+    wrap.className = 'cw-field';
+
+    const head = document.createElement('div');
+    head.className = 'cw-fieldhead';
+    head.innerHTML = `<label class="cw-label">${label}</label>`;
+    const ai = document.createElement('div');
+    ai.className = 'cw-ai menu_button' + (aiAvailable() ? '' : ' cw-ai-off');
+    ai.title = aiAvailable() ? 'Draft this field with AI' : 'Connect an API to use AI assist';
+    ai.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i><span>AI</span>';
+    head.appendChild(ai);
+    wrap.appendChild(head);
+
+    wrap.insertAdjacentHTML('beforeend', `<div class="cw-hint">${hint}</div>`);
+
+    const ta = textArea(state[stateKey], v => state[stateKey] = v, placeholder, rows);
+    wrap.appendChild(ta);
+
+    ai.addEventListener('click', () => runAI(ai, ta, stateKey));
+    return wrap;
 }
 
 function buildOverlay() {
@@ -103,8 +194,8 @@ function renderStep() {
             break;
         }
         case 'description': {
-            body.appendChild(field('Description', 'Looks, role, history — what the AI should know. Plain prose works best.',
-                textArea(state.description, v => state.description = v, 'Aria is a sharp-witted airship navigator in her late twenties, with...', 8)));
+            body.appendChild(aiField('Description', 'Looks, role, history — what the AI should know. Plain prose works best.',
+                'description', 'Aria is a sharp-witted airship navigator in her late twenties, with...', 8));
             break;
         }
         case 'personality': {
@@ -112,19 +203,18 @@ function renderStep() {
                 state.traits.has(val) ? state.traits.delete(val) : state.traits.add(val);
                 renderStep();
             }));
-            body.appendChild(field('Extra personality notes (optional)', 'Anything the chips do not cover.',
-                textArea(state.personalityNotes, v => state.personalityNotes = v, 'Speaks bluntly but means well; fiercely protective of her crew.', 4)));
+            body.appendChild(aiField('Extra personality notes (optional)', 'Anything the chips do not cover.',
+                'personalityNotes', 'Speaks bluntly but means well; fiercely protective of her crew.', 4));
             break;
         }
         case 'scenario': {
-            body.appendChild(field('Scenario', 'The situation in which the conversation takes place.',
-                textArea(state.scenario, v => state.scenario = v, 'The user has just boarded Aria\'s airship as a new recruit...', 6)));
+            body.appendChild(aiField('Scenario', 'The situation in which the conversation takes place.',
+                'scenario', 'The user has just boarded Aria\'s airship as a new recruit...', 6));
             break;
         }
         case 'greeting': {
-            const f = field('First Message', 'The character\'s opening message. Use {{char}} and {{user}} as placeholders.',
-                textArea(state.firstMessage, v => state.firstMessage = v, '*Aria glances up from her charts.* "So you\'re the new recruit, {{user}}? Let\'s see if you can keep up."', 6));
-            body.appendChild(f);
+            body.appendChild(aiField('First Message', 'The character\'s opening message. Use {{char}} and {{user}} as placeholders.',
+                'firstMessage', '*Aria glances up from her charts.* "So you\'re the new recruit, {{user}}? Let\'s see if you can keep up."', 6));
             break;
         }
         case 'review': {

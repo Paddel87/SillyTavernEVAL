@@ -91,7 +91,19 @@ let updateEditor = (navigation, flashOnNav = true) => { console.debug('Triggered
 // Do not optimize. updateEditor is a function that is updated by the displayWorldEntries with new data.
 export const worldInfoFilter = new FilterHelper(() => updateEditor());
 export const SORT_ORDER_KEY = 'world_info_sort_order';
+export const SIMPLE_MODE_KEY = 'world_info_simple_mode';
 export const METADATA_KEY = 'world_info';
+
+/**
+ * Applies the Simple Mode UI state to the document and the toolbar toggle.
+ * Simple Mode hides advanced World Info entry fields (marked with `.wiAdvanced`),
+ * leaving only Title, Status, Keywords and Content. Pure presentation: no entry data is changed.
+ * @param {boolean} enabled Whether Simple Mode should be active.
+ */
+export function applyWorldInfoSimpleMode(enabled) {
+    document.body.classList.toggle('wiSimpleMode', enabled);
+    $('#world_info_simple_mode').toggleClass('toggleEnabled', enabled);
+}
 
 export const DEFAULT_DEPTH = 4;
 export const DEFAULT_WEIGHT = 100;
@@ -6173,6 +6185,16 @@ export function initWorldInfo() {
     $('#world_info_use_group_scoring').on('change', function () {
         world_info_use_group_scoring = !!$(this).prop('checked');
         saveSettingsDebounced();
+    });
+
+    // Simple Mode toggle: client-side UI preference (persisted via accountStorage), not a per-book setting.
+    // Defaults to ON for users who have never toggled it; an explicit choice ('true'/'false') is respected.
+    const storedSimpleMode = accountStorage.getItem(SIMPLE_MODE_KEY);
+    applyWorldInfoSimpleMode(storedSimpleMode === null ? true : storedSimpleMode === 'true');
+    $('#world_info_simple_mode').on('click', function () {
+        const enabled = !document.body.classList.contains('wiSimpleMode');
+        accountStorage.setItem(SIMPLE_MODE_KEY, String(enabled));
+        applyWorldInfoSimpleMode(enabled);
     });
 
     $('#world_info_budget_cap').on('input', function () {

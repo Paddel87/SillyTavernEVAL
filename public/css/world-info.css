@@ -326,3 +326,16 @@ select.keyselect+span.select2-container .select2-selection--multiple {
     overflow-y: auto;
     overflow-x: hidden;
 }
+
+/* Simple Mode: hide advanced entry fields, leaving only Title, Status, Keywords and Content.
+   Toggled from the editor toolbar (#world_info_simple_mode) and persisted via accountStorage. */
+body.wiSimpleMode .wiAdvanced {
+    display: none !important;
+}
+
+/* Active state for the Simple Mode toolbar toggle. */
+#world_info_simple_mode.toggleEnabled {
+    color: var(--active, #6c8cff);
+    text-shadow: 0 0 8px var(--active, #6c8cff);
+    opacity: 1;
+}

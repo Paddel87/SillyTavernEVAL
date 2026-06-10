@@ -14,6 +14,7 @@ import {
 import { humanizedDateTime, favsToHotswap, getMessageTimeStamp, dragElement, isMobile, initRossMods } from './scripts/RossAscends-mods.js';
 import { userStatsHandler, statMesProcess, initStats } from './scripts/stats.js';
 import { initCharacterWizard } from './scripts/character-wizard.js';
+import { initTypingMindImporter } from './scripts/typingmind-importer.js';
 import {
     generateKoboldWithStreaming,
     kai_settings,
@@ -765,6 +766,7 @@ async function firstLoadInit() {
     initMacroAutoComplete();
     initWorldInfo();
     initCharacterWizard();
+    initTypingMindImporter();
     initHorde();
     initRossMods();
     initStats();

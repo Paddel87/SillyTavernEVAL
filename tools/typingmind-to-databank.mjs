@@ -52,19 +52,38 @@ function extractMessages(parsed) {
     return [];
 }
 
+/**
+ * Normalises a message `content` into plain text. TypingMind uses either a plain
+ * string or an array of parts (`[{ text, type }]`, e.g. for multimodal turns);
+ * non-text parts (images) are ignored.
+ * @param {unknown} content
+ * @returns {string}
+ */
+function normalizeContent(content) {
+    if (typeof content === 'string') return content;
+    if (Array.isArray(content)) {
+        return content.map(p => typeof p === 'string' ? p : String(p?.text ?? '')).filter(Boolean).join('\n');
+    }
+    if (content && typeof content === 'object') return String(content.text ?? '');
+    return '';
+}
+
 /** Builds the assistant-focused text blocks for a single chat's messages. */
 function blocksFromMessages(messages) {
     const blocks = [];
     messages.forEach((msg, i) => {
         if (msg?.role !== 'assistant') return;
-        const content = String(msg.content ?? '').trim();
+        const content = normalizeContent(msg.content).trim();
         if (!content || content.length < minChars) return;
         if (withPrompts) {
             // Find the nearest preceding user message for lightweight context.
             for (let j = i - 1; j >= 0; j--) {
-                if (messages[j]?.role === 'user' && messages[j]?.content) {
-                    blocks.push(`Prompt: ${String(messages[j].content).trim()}\n\n${content}`);
-                    return;
+                if (messages[j]?.role === 'user') {
+                    const prompt = normalizeContent(messages[j].content).trim();
+                    if (prompt) {
+                        blocks.push(`Prompt: ${prompt}\n\n${content}`);
+                        return;
+                    }
                 }
             }
         }
